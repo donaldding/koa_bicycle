@@ -4,6 +4,7 @@ const UserController = require("../app/controller/user");
 router.prefix("/api/users");
 
 router.post("/", UserController.create);
+router.post("/login", UserController.login);
 
 router.get("/", async (ctx, next) => {
   await ctx.render("index", {
