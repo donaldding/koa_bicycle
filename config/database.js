@@ -1,10 +1,11 @@
+require('dotenv').config()
 module.exports = {
   development: {
-    username: "root",
-    password: "",
+    username: "postgres",
+    password: process.env.LOCAL_DB_PASSWORD || "",
     database: "bicycle_dev",
     host: "127.0.0.1",
-    dialect: "mysql",
+    dialect: "postgres",
     dialectOptions: {
       charset: "utf8mb4",
       collate: "utf8mb4_unicode_ci",
@@ -13,11 +14,11 @@ module.exports = {
     }
   },
   test: {
-    username: "root",
-    password: "",
+    username: "postgres",
+    password: process.env.LOCAL_DB_PASSWORD || "",
     database: "bicycle_dev",
     host: "127.0.0.1",
-    dialect: "mysql",
+    dialect: "postgres",
     dialectOptions: {
       charset: "utf8mb4",
       collate: "utf8mb4_unicode_ci",
@@ -30,7 +31,7 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOSTNAME,
-    dialect: "mysql",
+    dialect: "postgres",
     dialectOptions: {
       charset: "utf8mb4",
       collate: "utf8mb4_unicode_ci",
