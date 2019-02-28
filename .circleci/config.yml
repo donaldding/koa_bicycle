@@ -24,7 +24,9 @@ jobs:
 
     steps:
       - checkout
-
+      - run:
+          name: Wait for db
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
       # Download and cache dependencies
       - restore_cache:
           keys:
@@ -38,11 +40,22 @@ jobs:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-
       - run:
-          name: Database Setup
-          command: |
-            ./node_modules/.bin/sequelize db:create
-            ./node_modules/.bin/sequelize db:migrate
+          name: Create Database
+          command: ./node_modules/.bin/sequelize db:create || true
+      - run:
+          name: Database Migrate
+          command: ./node_modules/.bin/sequelize db:migrate
       # run tests!
-      - run: npm run test
+      - run:
+          name: "JavaScript Linter"
+          command: npm run lint -- --format junit -o reports/junit/js-lint-results.xml
+      - run:
+          name: "Test Suite"
+          command: npm run test --ci --testResultsProcessor="jest-junit"
+          environment:
+            JEST_JUNIT_OUTPUT: "reports/junit/js-test-results.xml"
+      - store_test_results:
+          path: reports/junit
+      - store_artifacts:
+          path: reports/junit
