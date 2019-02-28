@@ -1,4 +1,4 @@
-require('dotenv').config()
+require("dotenv").config();
 module.exports = {
   development: {
     username: "postgres",
@@ -14,6 +14,7 @@ module.exports = {
     }
   },
   test: {
+    logging: false,
     username: "postgres",
     password: process.env.LOCAL_DB_PASSWORD || "",
     database: "bicycle_dev",
