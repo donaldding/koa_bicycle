@@ -20,11 +20,8 @@ module.exports = function () {
       if (ctx.current_user) {
         return next()
       }
-      ctx.response.status = 401
-      ctx.body = renderJson.ERROR_401('未授权')
-    } else {
-      ctx.response.status = 401
-      ctx.body = renderJson.ERROR_401('未授权')
     }
+    ctx.response.status = 401
+    ctx.body = renderJson.ERROR_401('未授权')
   }
 }
