@@ -1,6 +1,10 @@
-const { User } = require('../../db/schema')
+const {
+  User
+} = require('../../db/schema')
 
-User.sync({ force: false })
+User.sync({
+  force: false
+})
 
 class UserModel {
   /**
@@ -9,12 +13,18 @@ class UserModel {
    * @returns {Promise<boolean>}
    */
   static async create (user) {
-    const { cellphone, password, name } = user
+    let {
+      cellphone,
+      password,
+      name,
+      gender
+    } = user
 
     await User.create({
       cellphone,
       password,
-      name
+      name,
+      gender
     })
     return true
   }
@@ -51,6 +61,18 @@ class UserModel {
     return User.findOne({
       where: {
         cellphone
+      }
+    })
+  }
+
+  /**
+   * @param userid 用户id
+   * @returns {Promise.<*>}
+   */
+  static async findUserById (userid) {
+    return User.findOne({
+      where: {
+        id: userid
       }
     })
   }

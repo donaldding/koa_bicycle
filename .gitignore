@@ -3,4 +3,5 @@ npm-error.log
 .vscode/
 local_password.js
 .env
+npm-debug.log
 reports/*
