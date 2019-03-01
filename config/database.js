@@ -1,27 +1,29 @@
 require('dotenv').config()
+
 module.exports = {
   development: {
-    username: "postgres",
-    password: process.env.LOCAL_DB_PASSWORD || "",
-    database: "bicycle_dev",
-    host: "127.0.0.1",
-    dialect: "postgres",
+    username: 'postgres',
+    password: process.env.LOCAL_DB_PASSWORD || '',
+    database: 'bicycle_dev',
+    host: '127.0.0.1',
+    dialect: 'postgres',
     dialectOptions: {
-      charset: "utf8mb4",
-      collate: "utf8mb4_unicode_ci",
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci',
       supportBigNumbers: true,
       bigNumberStrings: true
     }
   },
   test: {
-    username: "postgres",
-    password: process.env.LOCAL_DB_PASSWORD || "",
-    database: "bicycle_dev",
-    host: "127.0.0.1",
-    dialect: "postgres",
+    logging: false,
+    username: 'postgres',
+    password: process.env.LOCAL_DB_PASSWORD || '',
+    database: 'bicycle_test',
+    host: '127.0.0.1',
+    dialect: 'postgres',
     dialectOptions: {
-      charset: "utf8mb4",
-      collate: "utf8mb4_unicode_ci",
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci',
       supportBigNumbers: true,
       bigNumberStrings: true
     }
@@ -31,12 +33,12 @@ module.exports = {
     password: process.env.DB_PASSWORD,
     database: process.env.DB_NAME,
     host: process.env.DB_HOSTNAME,
-    dialect: "postgres",
+    dialect: 'postgres',
     dialectOptions: {
-      charset: "utf8mb4",
-      collate: "utf8mb4_unicode_ci",
+      charset: 'utf8mb4',
+      collate: 'utf8mb4_unicode_ci',
       supportBigNumbers: true,
       bigNumberStrings: true
     }
   }
-};
+}

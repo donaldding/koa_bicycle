@@ -1,16 +1,16 @@
-const router = require("koa-router")();
-const UserController = require("../app/controller/user");
+const router = require('koa-router')()
+const UserController = require('../app/controller/user')
 
-router.prefix("/api/users");
+router.prefix('/api/users')
 
 router.post("/", UserController.create);
 router.post("/login", UserController.login);
 router.get("/info", UserController.getUserMsg)
 
-router.get("/", async (ctx, next) => {
-  await ctx.render("index", {
-    title: "get /api/users"
-  });
-});
+router.get('/', async (ctx) => {
+  await ctx.render('index', {
+    title: 'get /api/users'
+  })
+})
 
-module.exports = router;
+module.exports = router

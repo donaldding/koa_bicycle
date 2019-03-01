@@ -1,6 +1,6 @@
-const User = require("../../db/schema")["User"];
+const { User } = require('../../db/schema')
 
-User.sync({ force: false });
+User.sync({ force: false })
 
 class UserModel {
   /**
@@ -25,23 +25,22 @@ class UserModel {
    * @param id listID
    * @returns {Promise.<boolean>}
    */
-  static async delete(id) {
-    await User.destroy({
+  static async delete (id) {
+    return User.destroy({
       where: {
         id
       }
-    });
-    return true;
+    })
   }
 
   /**
    * 查询用户列表
    * @returns {Promise<*>}
    */
-  static async findAllUserList() {
-    return await User.findAll({
-      attributes: ["id", "cellphone"]
-    });
+  static async findAllUserList () {
+    return User.findAll({
+      attributes: ['id', 'cellphone']
+    })
   }
 
   /**
@@ -49,12 +48,12 @@ class UserModel {
    * @param cellphone  手机号
    * @returns {Promise.<*>}
    */
-  static async findUserByCellphone(cellphone) {
-    return await User.findOne({
+  static async findUserByCellphone (cellphone) {
+    return User.findOne({
       where: {
         cellphone
       }
-    });
+    })
   }
  
   /**
@@ -70,4 +69,4 @@ class UserModel {
   }
 }
 
-module.exports = UserModel;
+module.exports = UserModel
