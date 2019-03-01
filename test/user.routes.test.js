@@ -24,7 +24,8 @@ describe("POST /api/users", () => {
       .send({
         cellphone: "12345678",
         password: "123456",
-        name: "test"
+        name: "test",
+        gender: 'f'
       });
     expect(response.status).toEqual(200);
     expect(response.type).toEqual("application/json");
@@ -33,3 +34,21 @@ describe("POST /api/users", () => {
     });
   });
 });
+
+describe("GET /api/users/info", () => {
+  test("should respond as expected", async () => {
+    const createUser = await request(server)
+      .post("/api/users/login")
+      .send({
+        cellphone: "12345678",
+        password: "123456",
+      })
+
+    const response = await request(server)
+      .get("/api/users/info")
+      .set('Authorization', createUser.body.data.token)
+    expect(response.status).toEqual(200);
+    expect(response.type).toEqual("application/json")
+    expect(response.body.data.username).toEqual(createUser.body.data.username)
+  })
+})

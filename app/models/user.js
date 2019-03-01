@@ -9,12 +9,13 @@ class UserModel {
    * @returns {Promise<boolean>}
    */
   static async create(user) {
-    let { cellphone, password, name } = user;
+    let { cellphone, password, name, gender } = user;
 
     await User.create({
       cellphone,
       password,
-      name
+      name,
+      gender
     });
     return true;
   }
@@ -54,6 +55,18 @@ class UserModel {
         cellphone
       }
     });
+  }
+ 
+  /**
+   * @param userid 用户id
+   * @returns {Promise.<*>}
+   */
+  static async findUserById(userid) {
+    return await User.findOne({
+      where: {
+        id: userid
+      }
+    })
   }
 }
 

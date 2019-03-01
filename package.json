@@ -6,7 +6,8 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "jest --forceExit"
+    "test": "jest --forceExit",
+    "debugger": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
