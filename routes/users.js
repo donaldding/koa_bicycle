@@ -3,9 +3,9 @@ const UserController = require('../app/controller/user')
 
 router.prefix('/api/users')
 
-router.post("/", UserController.create);
-router.post("/login", UserController.login);
-router.get("/info", UserController.getUserMsg)
+router.post('/', UserController.create)
+router.post('/login', UserController.login)
+router.get('/info', UserController.getUserMsg)
 
 router.get('/', async (ctx) => {
   await ctx.render('index', {

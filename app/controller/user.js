@@ -34,7 +34,9 @@ class UserController {
           }
 
           // 储存token失效有效期1小时
-          const token = jwt.sign(userToken, secret.sign, { expiresIn: '1h' })
+          const token = jwt.sign(userToken, secret.sign, {
+            expiresIn: '1h'
+          })
 
           ctx.response.status = 200
           ctx.body = renderResponse.SUCCESS_200('注册成功', token)
@@ -64,12 +66,14 @@ class UserController {
           id: user.id
         }
         // 签发token
-        const token = jwt.sign(userToken, secret.sign, { expiresIn: '1h' })
+        const token = jwt.sign(userToken, secret.sign, {
+          expiresIn: '1h'
+        })
 
         ctx.response.status = 200
         ctx.body = renderResponse.SUCCESS_200('登录成功', {
           id: user.id,
-          username: user.username,
+          username: user.name,
           token
         })
       } else {
@@ -87,19 +91,19 @@ class UserController {
    * @param ctx
    * @returns {Promise.<void>}
    */
-  static async getUserMsg(ctx) {
-    const token = ctx.headers.authorization;
+  static async getUserMsg (ctx) {
+    const token = ctx.headers.authorization
     if (token) {
       let userId
-      jwt.verify(token, secret.sign, function(err, decoded) {
-        if(err){
-          ctx.response.status = 401;
-          ctx.body = renderResponse.ERROR_401("登录超时");
-          return;
+      await jwt.verify(token, secret.sign, function (err, decoded) {
+        if (err) {
+          ctx.response.status = 401
+          ctx.body = renderResponse.ERROR_401('登录超时')
+          return
         }
-        userId = decoded.id        
+        userId = decoded.id
       })
-      const user = await userModel.findUserById(userId);
+      const user = await userModel.findUserById(userId)
       const info = {
         id: user.id,
         username: user.name,
@@ -108,11 +112,11 @@ class UserController {
         balance: user.balance,
         gender: user.gender
       }
-      ctx.response.status = 200;
-      ctx.body = renderResponse.SUCCESS_200("获取成功", info);
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('获取成功', info)
     } else {
-      ctx.response.status = 403;
-      ctx.body = renderResponse.ERROR_403("用户不存在")
+      ctx.response.status = 403
+      ctx.body = renderResponse.ERROR_403('用户不存在')
     }
   }
 }
