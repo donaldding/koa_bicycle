@@ -3,6 +3,7 @@ const request = require('supertest')
 const db = require('../db/schema')
 const truncate = require('./truncate')
 const User = db['User']
+const login = require('./login')
 
 // close the server after each test
 afterAll(() => {
@@ -37,12 +38,7 @@ describe('POST /api/session/sign_up', () => {
 
 describe('GET /api/users/info', () => {
   test('should respond as expected', async () => {
-    const createUser = await request(server)
-      .post('/api/session/sign_in')
-      .send({
-        cellphone: '12345678',
-        password: '123456'
-      })
+    const createUser = await login()
 
     const response = await request(server)
       .get('/api/users/info')
@@ -50,5 +46,23 @@ describe('GET /api/users/info', () => {
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.data.cellphone).toEqual('12345678')
+  })
+})
+
+describe('POST /api/users/update', () => {
+  test('should respond as expected', async () => {
+    const createUser = await login()
+
+    const response = await request(server)
+      .post('/api/users/update')
+      .set('Authorization', createUser.body.data.token)
+      .send({
+        name: 'test1',
+        avatar: 'www.baidu.com',
+        // gender: 'g',
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.data.name).toEqual('test1')
   })
 })

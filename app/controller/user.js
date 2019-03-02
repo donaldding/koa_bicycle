@@ -1,7 +1,9 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const userModel = require('../models/user')
-const { User } = require('../../db/schema')
+const {
+  User
+} = require('../../db/schema')
 
 const secret = require('../../config/secret')
 const renderResponse = require('../../util/renderJson')
@@ -107,6 +109,40 @@ class UserController {
     } else {
       ctx.response.status = 403
       ctx.body = renderResponse.ERROR_403('用户不存在')
+    }
+  }
+
+  /**
+   * 更新用户信息
+   * @param ctx
+   * @returns {Promise<void>}
+   */
+  static async update (ctx) {
+    let a = ctx.request.body
+    const user = ctx.current_user
+    if (user) {
+      await User.update(a, {
+        where: {
+          id: user.id
+        }
+      }).then(() => {
+        const updateUser = ctx.current_user
+        const info = {
+          id: updateUser.id,
+          name: updateUser.name,
+          cellphone: updateUser.cellphone,
+          avatar: updateUser.avatar,
+          balance: updateUser.balance,
+          gender: updateUser.gender,
+          info1: updateUser
+        }
+        ctx.response.status = 200
+        ctx.body = renderResponse.SUCCESS_200('修改成功', info)
+      }).catch((err) => {
+        console.log(err)
+        ctx.response.status = 412
+        ctx.body = renderResponse.ERROR_412('参数错误')
+      })
     }
   }
 }
