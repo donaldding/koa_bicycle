@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const userModel = require('../models/user')
+const { User } = require('../../db/schema')
+
 const secret = require('../../config/secret')
 const renderResponse = require('../../util/renderJson')
 
@@ -26,21 +28,19 @@ class UserController {
         user.password = hash
 
         // 创建用户
-        await userModel.create(user).then((dbUser) => {
-          // 签发token
-          const userToken = {
-            cellphone: dbUser.cellphone,
-            id: dbUser.id
-          }
-
-          // 储存token失效有效期1小时
-          const token = jwt.sign(userToken, secret.sign, {
-            expiresIn: '1h'
-          })
-
-          ctx.response.status = 200
-          ctx.body = renderResponse.SUCCESS_200('注册成功', token)
+        const dbUser = await User.create(user)
+        // 签发token
+        const userToken = {
+          cellphone: dbUser.cellphone,
+          id: dbUser.id
+        }
+        // 储存token失效有效期1小时
+        const token = jwt.sign(userToken, secret.sign, {
+          expiresIn: '1h'
         })
+
+        ctx.response.status = 200
+        ctx.body = renderResponse.SUCCESS_200('注册成功', token)
       }
     } else {
       ctx.body = renderResponse.ERROR_412('参数错误')
@@ -92,18 +92,8 @@ class UserController {
    * @returns {Promise.<void>}
    */
   static async getUserMsg (ctx) {
-    const token = ctx.headers.authorization
-    if (token) {
-      let userId
-      await jwt.verify(token, secret.sign, function (err, decoded) {
-        if (err) {
-          ctx.response.status = 401
-          ctx.body = renderResponse.ERROR_401('登录超时')
-          return
-        }
-        userId = decoded.id
-      })
-      const user = await userModel.findUserById(userId)
+    const user = ctx.current_user
+    if (user) {
       const info = {
         id: user.id,
         username: user.name,

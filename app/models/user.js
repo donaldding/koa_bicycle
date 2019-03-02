@@ -1,34 +1,10 @@
-const {
-  User
-} = require('../../db/schema')
+const { User } = require('../../db/schema')
 
 User.sync({
   force: false
 })
 
 class UserModel {
-  /**
-   * 创建用户
-   * @param user
-   * @returns {Promise<boolean>}
-   */
-  static async create (user) {
-    let {
-      cellphone,
-      password,
-      name,
-      gender
-    } = user
-
-    await User.create({
-      cellphone,
-      password,
-      name,
-      gender
-    })
-    return true
-  }
-
   /**
    * 删除用户
    * @param id listID
