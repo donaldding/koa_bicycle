@@ -59,10 +59,14 @@ describe('POST /api/users/update', () => {
       .send({
         name: 'test1',
         avatar: 'www.baidu.com',
-        // gender: 'g',
+        gender: 'g',
+        balance: 123,
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.data.name).toEqual('test1')
+    expect(response.body.data.avatar).toEqual('www.baidu.com')
+    expect(response.body.data.gender).toEqual('g')
+    expect(response.body.data.balance).toEqual(null)
   })
 })
