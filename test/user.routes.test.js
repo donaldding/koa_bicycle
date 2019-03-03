@@ -9,17 +9,17 @@ const login = require('./login')
 afterAll(() => {
   server.close()
 })
+beforeEach(async () => {
+  truncate()
+})
+afterEach(async () => {
+  await truncate()
+})
 
 describe('POST /api/session/sign_up', () => {
-  beforeEach(async () => {
-    // db.sequelize.sync({ force: true });
-    // await spawn("./node_modules/.bin/sequelize", ["db:migrate"], spawnOptions);
-    await truncate()
-    console.log('clean db')
-  })
   test('should respond as expected', async () => {
     const users = await User.findAll()
-    expect(users.length).toBe(0)
+    expect(users.length).toEqual(0)
     const response = await request(server)
       .post('/api/session/sign_up')
       .send({
@@ -30,8 +30,8 @@ describe('POST /api/session/sign_up', () => {
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    User.findAll().then(datas => {
-      expect(datas.length).toBe(1)
+    return User.findAll().then(datas => {
+      expect(datas.length).toEqual(1)
     })
   })
 })
@@ -60,7 +60,7 @@ describe('POST /api/users/update', () => {
         name: 'test1',
         avatar: 'www.baidu.com',
         gender: 'g',
-        balance: 123,
+        balance: 123
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
