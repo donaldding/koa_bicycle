@@ -1,6 +1,8 @@
 const server = require('./server')
 const request = require('supertest')
-const { User } = require('../db/schema')
+const {
+  User
+} = require('../db/schema')
 const bcrypt = require('bcryptjs')
 
 async function login() {
@@ -9,7 +11,8 @@ async function login() {
 
   await User.create({
     cellphone: '12345678',
-    password: hash
+    password: hash,
+    is_admin: true
   })
   return await request(server)
     .post('/api/session/sign_in')
