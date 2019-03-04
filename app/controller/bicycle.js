@@ -92,7 +92,7 @@ class BicycleController {
    */
   static async book (ctx) {
     const bike = await Bicycle.findById(ctx.params.id)
-    if (bike.state == 'ready') {
+    if (bike.state === 'ready') {
       await Bicycle.update(
         {
           state: 'booked',
