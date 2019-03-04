@@ -87,10 +87,6 @@ describe('GET /api/users/all', () => {
   test('should return users(When many users)', async () => {
     const createUser = await login()
 
-    for (let i = 1; i <= 22; i++) {
-      await login()
-    }
-
     const response = await request(server)
       .get('/api/users/all')
       .set('Authorization', createUser.body.data.token)
@@ -102,26 +98,19 @@ describe('GET /api/users/all', () => {
   test('should return users(When send per_page)', async () => {
     const createUser = await login()
 
-    for (let i = 1; i <= 22; i++) {
-      await login()
-    }
-
     const response = await request(server)
       .get('/api/users/all')
       .set('Authorization', createUser.body.data.token)
       .send({
-        per_page: 22
+        per_page: 21
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    expect(response.body.meta.per_page).toEqual(22)
+    expect(response.body.meta.per_page).toEqual(21)
+    expect(response.body.data.length).toEqual(21)
   })
   test('should return users(When send page)', async () => {
     const createUser = await login()
-
-    for (let i = 1; i <= 22; i++) {
-      await login()
-    }
 
     const response = await request(server)
       .get('/api/users/all')

@@ -159,7 +159,7 @@ class UserController {
       const perPage = data.per_page ? data.per_page : 20
       await User.findAndCountAll({
         offset: 20 * (page - 1),
-        limit: page
+        limit: perPage
       }).then(result => {
         list = result.rows
         meta = {
