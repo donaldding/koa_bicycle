@@ -17,9 +17,9 @@
 
 - [x] 注册
 - [x] 登陆
-- [ ] 获取个人信息&copy;
-- [ ] 修改个人信息&copy;
-- [ ] 列表(admin)&copy;
+- [x] 获取个人信息&copy;
+- [x] 修改个人信息&copy;
+- [x] 列表(admin)&copy;
 
 #### 2. 服务网点 ServicePoint &copy;
 
