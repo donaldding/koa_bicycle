@@ -6,7 +6,7 @@
     "start": "node bin/www",
     "dev": "./node_modules/.bin/nodemon bin/www",
     "prd": "pm2 start bin/www",
-    "test": "NODE_ENV=test jest --silent --runInBand --forceExit",
+    "test": "NODE_ENV=test jest --runInBand --forceExit",
     "lint": "./node_modules/.bin/eslint ./",
     "debugger": "node --inspect-brk ./node_modules/jest/bin/jest --runInBand --no-cache --no-watchman"
   },
