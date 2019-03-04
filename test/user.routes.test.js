@@ -114,7 +114,7 @@ describe('GET /api/users/all', () => {
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    expect(response.body.data.length).toEqual(22)
+    expect(response.body.meta.per_page).toEqual(22)
   })
   test('should return users(When send page)', async () => {
     const createUser = await login()

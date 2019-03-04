@@ -155,38 +155,19 @@ class UserController {
     if (user.is_admin) {
       let list
       let meta
-      if (data.page) {
-        await User.findAndCountAll({
-          offset: 20 * (data.page - 1),
-          limit: 20
-        }).then(result => {
-          list = result.rows
-          meta = {
-            page: pagination(result.count),
-            per_page: 20
-          }
-        })
-      } else if (data.per_page) {
-        await User.findAndCountAll({
-          limit: data.per_page
-        }).then(result => {
-          list = result.rows
-          meta = {
-            page: pagination(result.count, data.per_page),
-            per_page: data.per_page
-          }
-        })
-      } else {
-        await User.findAndCountAll({
-          limit: 20
-        }).then(result => {
-          list = result.rows
-          meta = {
-            page: pagination(result.count),
-            per_page: 20
-          }
-        })
-      }
+      const page = data.page ? data.page : 1
+      const perPage = data.per_page ? data.per_page : 20
+      await User.findAndCountAll({
+        offset: 20 * (page - 1),
+        limit: page
+      }).then(result => {
+        list = result.rows
+        meta = {
+          page: pagination(result.count, perPage),
+          per_page: perPage,
+          current_page: page
+        }
+      })
 
       ctx.response.status = 200
       ctx.body = renderResponse.SUCCESS_200('', list, meta)
