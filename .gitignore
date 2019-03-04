@@ -5,3 +5,4 @@ local_password.js
 .env
 npm-debug.log
 reports/*
+coverage/
