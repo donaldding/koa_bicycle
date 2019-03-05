@@ -4,7 +4,7 @@ const db = require('../db/schema')
 const truncate = require('./truncate')
 const ServicePoint = db['ServicePoints']
 const login = require('./login')
-const createUser = require('./createUser')
+const createPoint = require('./createServicePoints.js')
 
 afterAll(() => {
   server.close()
@@ -36,5 +36,64 @@ describe('POST /api/servicePoints', () => {
     expect(response.body.data.name).toEqual('佛山季华路网点')
     expect(response.body.data.lat).toEqual(123.11)
     expect(response.body.data.lng).toEqual(124.11)
+  })
+})
+
+describe('GET /api/servicePoints', () => {
+  test('should return points', async () => {
+    const loginUser = await login()
+    await createPoint()
+    const response = await request(server)
+      .get('/api/servicePoints')
+      .set('Authorization', loginUser.body.data.token)
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.data.length).toEqual(1)
+  })
+  test('should return points(when many points)', async () => {
+    const loginUser = await login()
+    for (let i = 1; i <= 22; i++) {
+      await createPoint(i)
+    }
+    const response = await request(server)
+      .get('/api/servicePoints')
+      .set('Authorization', loginUser.body.data.token)
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.page).toEqual(2)
+    expect(response.body.meta.per_page).toEqual(20)
+  })
+  test('should return points(when send page)', async () => {
+    const loginUser = await login()
+    for (let i = 1; i <= 22; i++) {
+      await createPoint(i)
+    }
+    const response = await request(server)
+      .get('/api/servicePoints')
+      .set('Authorization', loginUser.body.data.token)
+      .send({
+        page: 2
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.current_page).toEqual(2)
+    expect(response.body.data.length).toEqual(2)
+  })
+  test('should return points(when send per_page)', async () => {
+    const loginUser = await login()
+    for (let i = 1; i <= 22; i++) {
+      await createPoint(i)
+    }
+    const response = await request(server)
+      .get('/api/servicePoints')
+      .set('Authorization', loginUser.body.data.token)
+      .send({
+        per_page: 22,
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.page).toEqual(1)
+    expect(response.body.meta.per_page).toEqual(22)
+    expect(response.body.data.length).toEqual(22)
   })
 })
