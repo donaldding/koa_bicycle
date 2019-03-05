@@ -173,7 +173,7 @@ class UserController {
       ctx.body = renderResponse.SUCCESS_200('', list, meta)
     } else {
       ctx.response.status = 412
-      ctx.body = renderResponse.ERROR_412('权限不足', user)
+      ctx.body = renderResponse.ERROR_412('权限不足')
     }
   }
 }

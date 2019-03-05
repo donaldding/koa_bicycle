@@ -4,6 +4,7 @@ const db = require('../db/schema')
 const truncate = require('./truncate')
 const User = db['User']
 const login = require('./login')
+const createUser = require('./createUser')
 
 // close the server after each test
 afterAll(() => {
@@ -75,32 +76,40 @@ describe('POST /api/users/update', () => {
 
 describe('GET /api/users/all', () => {
   test('should return users(When the user is 1)', async () => {
-    const createUser = await login()
+    const loginUser = await login()
 
     const response = await request(server)
       .get('/api/users/all')
-      .set('Authorization', createUser.body.data.token)
+      .set('Authorization', loginUser.body.data.token)
 
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
   })
   test('should return users(When many users)', async () => {
-    const createUser = await login()
+    const loginUser = await login()
+
+    for (let i = 1; i <= 21; i++) {
+      await createUser()
+    }
 
     const response = await request(server)
       .get('/api/users/all')
-      .set('Authorization', createUser.body.data.token)
+      .set('Authorization', loginUser.body.data.token)
 
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.meta.page).toEqual(2)
   })
   test('should return users(When send per_page)', async () => {
-    const createUser = await login()
+    const loginUser = await login()
+
+    for (let i = 1; i <= 21; i++) {
+      await createUser()
+    }
 
     const response = await request(server)
       .get('/api/users/all')
-      .set('Authorization', createUser.body.data.token)
+      .set('Authorization', loginUser.body.data.token)
       .send({
         per_page: 21
       })
@@ -110,11 +119,15 @@ describe('GET /api/users/all', () => {
     expect(response.body.data.length).toEqual(21)
   })
   test('should return users(When send page)', async () => {
-    const createUser = await login()
+    const loginUser = await login()
+
+    for (let i = 1; i <= 21; i++) {
+      await createUser()
+    }
 
     const response = await request(server)
       .get('/api/users/all')
-      .set('Authorization', createUser.body.data.token)
+      .set('Authorization', loginUser.body.data.token)
       .send({
         page: 2
       })
