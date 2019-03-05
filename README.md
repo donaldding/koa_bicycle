@@ -31,11 +31,12 @@
 
 ##### 接口
 
-- [ ] 创建(admin)
-- [ ] 列表(admin)
-- [ ] 详情(admin)
-- [ ] 修改(admin)
-- [ ] 查询这个网点的所有单车 (admin)
+- [x] 创建(admin)
+- [x] 列表(admin)
+- [x] 详情(admin)
+- [x] 修改(admin)
+- [x] 绑定单车到网点(admin)
+- [x] 查询这个网点的所有单车 (admin)
 
 #### 3. 骑行订单 order &copy;
 

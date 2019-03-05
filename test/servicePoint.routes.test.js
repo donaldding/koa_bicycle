@@ -3,6 +3,9 @@ const request = require('supertest')
 const db = require('../db/schema')
 const truncate = require('./truncate')
 const ServicePoint = db['ServicePoints']
+const {
+  Bicycle
+} = require('../db/schema')
 const login = require('./login')
 const createPoint = require('./createServicePoints.js')
 
@@ -142,5 +145,77 @@ describe('GET /api/servicePoints/:id', () => {
     expect(response.type).toEqual('application/json')
     const resp_point = response.body.data
     expect(resp_point.name).toEqual('网点1')
+  })
+})
+
+describe('POST /api/servicePoints/:id/add', () => {
+  test('add bicyles to servicePoints', async () => {
+    const loginUser = await login()
+    point = await ServicePoint.create({
+      name: '网点1',
+      lat: '122.55',
+      lng: '123.55'
+    })
+    bike = await Bicycle.create({
+      num: '1234',
+      lat: '12.34',
+      lng: '123.4',
+      state: 'ready',
+      price: 150
+    })
+    const response = await request(server)
+      .post(`/api/servicePoints/${point.id}/add`)
+      .set('Authorization', loginUser.body.data.token)
+      .send({
+        ids: [bike.id]
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    return Bicycle.findOne({
+      where: {
+        id: bike.id
+      }
+    }).then(result => {
+      expect(result.servicePointId).toEqual(point.id)
+    })
+  })
+})
+
+describe('GET /api/servicePoints/:id/bicycles', () => {
+  test('should return this servicePoint all bicycles', async () => {
+    const loginUser = await login()
+    point = await ServicePoint.create({
+      name: '网点1',
+      lat: '122.55',
+      lng: '123.55'
+    })
+    bike = await Bicycle.create({
+      num: '1234',
+      lat: '12.34',
+      lng: '123.4',
+      state: 'ready',
+      price: 150
+    })
+    bike2 = await Bicycle.create({
+      num: '1235',
+      lat: '12.34',
+      lng: '123.4',
+      state: 'ready',
+      price: 150
+    })
+    await request(server)
+      .post(`/api/servicePoints/${point.id}/add`)
+      .set('Authorization', loginUser.body.data.token)
+      .send({
+        ids: [bike.id, bike2.id]
+      })
+
+    const response = await request(server)
+      .get(`/api/servicePoints/${point.id}/bicycles`)
+      .set('Authorization', loginUser.body.data.token)
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    const resp_point = response.body.data
+    expect(resp_point.Bicycles.length).toEqual(2)
   })
 })
