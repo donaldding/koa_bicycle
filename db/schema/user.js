@@ -7,9 +7,10 @@ module.exports = (sequelize, DataTypes) => {
     token: DataTypes.STRING,
     balance: DataTypes.INTEGER,
     avatar: DataTypes.STRING,
-    gender: DataTypes.STRING
+    gender: DataTypes.STRING,
+    is_admin: DataTypes.BOOLEAN
   }, {});
-  User.associate = function(models) {
+  User.associate = function (models) {
     // associations can be defined here
   };
   return User;

@@ -4,6 +4,7 @@ const userModel = require('../models/user')
 const {
   User
 } = require('../../db/schema')
+const pagination = require('../../util/pagination')
 
 const secret = require('../../config/secret')
 const renderResponse = require('../../util/renderJson')
@@ -141,6 +142,38 @@ class UserController {
       const updateUser = await userModel.findUserById(user.id)
       ctx.response.status = 200
       ctx.body = renderResponse.SUCCESS_200('修改成功', updateUser)
+    }
+  }
+
+  /**
+   * 查询用户列表（仅限管理员）
+   * @param {*} ctx
+   */
+  static async all (ctx) {
+    const user = ctx.current_user
+    const data = ctx.request.body
+    if (user.is_admin) {
+      let list
+      let meta
+      const page = data.page ? data.page : 1
+      const perPage = data.per_page ? data.per_page : 20
+      await User.findAndCountAll({
+        offset: 20 * (page - 1),
+        limit: perPage
+      }).then(result => {
+        list = result.rows
+        meta = {
+          page: pagination(result.count, perPage),
+          per_page: perPage,
+          current_page: page
+        }
+      })
+
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('', list, meta)
+    } else {
+      ctx.response.status = 412
+      ctx.body = renderResponse.ERROR_412('权限不足', user)
     }
   }
 }

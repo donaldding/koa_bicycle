@@ -14,15 +14,17 @@ const renderResp = {
     msg
   }),
 
-  ERROR_412: msg => ({
+  ERROR_412: (msg, data) => ({
     code: 412,
-    msg
-  }),
-
-  SUCCESS_200: (msg, data) => ({
-    code: 200,
     msg,
     data
+  }),
+
+  SUCCESS_200: (msg, data, meta = {}) => ({
+    code: 200,
+    msg,
+    data,
+    meta
   })
 }
 

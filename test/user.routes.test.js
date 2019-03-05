@@ -26,11 +26,13 @@ describe('POST /api/session/sign_up', () => {
         cellphone: '12345678',
         password: '123456',
         name: 'test',
-        gender: 'f'
+        gender: 'f',
+        is_admin: true,
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     return User.findAll().then(datas => {
+      expect(datas[0].is_admin).toEqual(true)
       expect(datas.length).toEqual(1)
     })
   })
@@ -68,5 +70,56 @@ describe('POST /api/users/update', () => {
     expect(response.body.data.avatar).toEqual('www.baidu.com')
     expect(response.body.data.gender).toEqual('g')
     expect(response.body.data.balance).toEqual(null)
+  })
+})
+
+describe('GET /api/users/all', () => {
+  test('should return users(When the user is 1)', async () => {
+    const createUser = await login()
+
+    const response = await request(server)
+      .get('/api/users/all')
+      .set('Authorization', createUser.body.data.token)
+
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+  })
+  test('should return users(When many users)', async () => {
+    const createUser = await login()
+
+    const response = await request(server)
+      .get('/api/users/all')
+      .set('Authorization', createUser.body.data.token)
+
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.page).toEqual(2)
+  })
+  test('should return users(When send per_page)', async () => {
+    const createUser = await login()
+
+    const response = await request(server)
+      .get('/api/users/all')
+      .set('Authorization', createUser.body.data.token)
+      .send({
+        per_page: 21
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.per_page).toEqual(21)
+    expect(response.body.data.length).toEqual(21)
+  })
+  test('should return users(When send page)', async () => {
+    const createUser = await login()
+
+    const response = await request(server)
+      .get('/api/users/all')
+      .set('Authorization', createUser.body.data.token)
+      .send({
+        page: 2
+      })
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.meta.page).toEqual(2)
   })
 })
