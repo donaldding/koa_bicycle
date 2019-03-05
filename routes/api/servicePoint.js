@@ -5,4 +5,5 @@ router.prefix('/servicePoints')
 
 router.post('/', ServicePointController.create)
 router.get('/', ServicePointController.all)
+router.post('/:id', ServicePointController.update)
 module.exports = router

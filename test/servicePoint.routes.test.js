@@ -97,3 +97,29 @@ describe('GET /api/servicePoints', () => {
     expect(response.body.data.length).toEqual(22)
   })
 })
+
+describe('POST /api/servicePoints/:id', () => {
+  test('should update the points', async () => {
+    const loginUser = await login()
+    point = await ServicePoint.create({
+      name: '网点1',
+      lat: '122.55',
+      lng: '123.55'
+    })
+
+    const response = await request(server)
+      .post(`/api/servicePoints/${point.id}`)
+      .set('Authorization', loginUser.body.data.token)
+      .send({
+        name: '季华路网点',
+        lat: '123.55',
+        lng: '145.55'
+      })
+    const resp_point = response.body.data
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(resp_point.name).toEqual('季华路网点')
+    expect(resp_point.lat).toEqual(123.55)
+    expect(resp_point.lng).toEqual(145.55)
+  })
+})

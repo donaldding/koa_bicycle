@@ -63,6 +63,32 @@ class ServicepointController {
       ctx.body = renderResponse.ERROR_412('权限不足')
     }
   }
+
+  /**
+   * 更新网点
+   * @param {*} ctx
+   */
+  static async update (ctx) {
+    const point = await ServicePoints.findById(ctx.params.id)
+
+    let {
+      name,
+      lat,
+      lng
+    } = ctx.request.body
+
+    await point.update({
+      name,
+      lat,
+      lng
+    }).catch(() => {
+      ctx.response.status = 412
+      ctx.body = renderResponse.ERROR_412('参数错误')
+    })
+    await point.reload()
+    ctx.response.status = 200
+    ctx.body = renderResponse.SUCCESS_200('修改成功', point)
+  }
 }
 
 module.exports = ServicepointController
