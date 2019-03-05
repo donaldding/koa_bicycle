@@ -69,25 +69,47 @@ class ServicepointController {
    * @param {*} ctx
    */
   static async update (ctx) {
-    const point = await ServicePoints.findById(ctx.params.id)
+    const user = ctx.current_user
+    if (user.is_admin) {
+      const point = await ServicePoints.findById(ctx.params.id)
 
-    let {
-      name,
-      lat,
-      lng
-    } = ctx.request.body
+      let {
+        name,
+        lat,
+        lng
+      } = ctx.request.body
 
-    await point.update({
-      name,
-      lat,
-      lng
-    }).catch(() => {
+      await point.update({
+        name,
+        lat,
+        lng
+      }).catch(() => {
+        ctx.response.status = 412
+        ctx.body = renderResponse.ERROR_412('参数错误')
+      })
+      await point.reload()
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('修改成功', point)
+    } else {
       ctx.response.status = 412
-      ctx.body = renderResponse.ERROR_412('参数错误')
-    })
-    await point.reload()
-    ctx.response.status = 200
-    ctx.body = renderResponse.SUCCESS_200('修改成功', point)
+      ctx.body = renderResponse.ERROR_412('权限不足')
+    }
+  }
+
+  /**
+   * 获取网点详情
+   * @param {*} ctx
+   */
+  static async detail (ctx) {
+    const user = ctx.current_user
+    if (user.is_admin) {
+      const point = await ServicePoints.findById(ctx.params.id)
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('', point)
+    } else {
+      ctx.response.status = 412
+      ctx.body = renderResponse.ERROR_412('权限不足')
+    }
   }
 }
 
