@@ -2,7 +2,7 @@
 
 module.exports = {
   up: (queryInterface, Sequelize) => {
-    queryInterface.changeColumn('Bicycles', 'num', {
+    return queryInterface.changeColumn('Bicycles', 'num', {
       type: Sequelize.STRING,
       allowNull: false,
       unique: true
