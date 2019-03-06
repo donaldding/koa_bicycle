@@ -2,8 +2,7 @@
 
 module.exports = (sequelize, DataTypes) => {
   const Bicycle = sequelize.define(
-    'Bicycle',
-    {
+    'Bicycle', {
       num: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -20,9 +19,15 @@ module.exports = (sequelize, DataTypes) => {
           model: 'Users',
           key: 'id'
         }
+      },
+      servicePointId: {
+        type: DataTypes.INTEGER,
+        references: {
+          model: 'ServicePoints',
+          key: 'id'
+        }
       }
-    },
-    {
+    }, {
       hooks: {
         beforeSave: instance => {
           if (instance.location) return
@@ -34,8 +39,13 @@ module.exports = (sequelize, DataTypes) => {
       }
     }
   )
-  Bicycle.associate = function(models) {
-    Bicycle.belongsTo(models['User'], { foreignKey: 'userId' })
+  Bicycle.associate = function (models) {
+    Bicycle.belongsTo(models['User'], {
+      foreignKey: 'userId'
+    })
+    Bicycle.belongsTo(models['ServicePoints'], {
+      foreignKey: 'servicePointId'
+    })
   }
   return Bicycle
 }

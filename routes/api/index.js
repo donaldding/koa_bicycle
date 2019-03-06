@@ -1,10 +1,11 @@
 const apiRouter = require('koa-router')()
 const user = require('./users')
 const bicycle = require('./bicycle')
+const servicePoint = require('./servicePoint')
 
 apiRouter.prefix('/api')
 
-const routers = [user, bicycle]
+const routers = [user, bicycle, servicePoint]
 for (var router of routers) {
   apiRouter.use(router.routes(), router.allowedMethods())
 }
