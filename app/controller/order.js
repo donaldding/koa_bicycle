@@ -19,12 +19,8 @@ class OrderController {
     let {
       bikeId
     } = data
-    const bike = await Bicycle.findById({
-      where: {
-        id: bikeId
-      }
-    })
-    if (bike.status === 'ready') {
+    const bike = await Bicycle.findById(bikeId)
+    if (bike.state === 'ready') {
       await Bicycle.update({
         state: 'rented'
       }, {
