@@ -127,20 +127,26 @@ class ServicepointController {
     if (user.is_admin) {
       const pointId = ctx.params.id
       let updateList = []
-      for (let i = 0; i < ids.length; i++) {
-        const bike = await Bicycle.findById(ids[i])
-        await Bicycle.update({
-          servicePointId: pointId
-        }, {
-          where: {
-            id: ids[i]
+      const bike = await Bicycle.findAll({
+        where: {
+          id: {
+            $in: ids
           }
-        }).catch(() => {
-          ctx.response.status = 412
-          ctx.body = renderResponse.ERROR_412('参数错误')
-        })
-        updateList.push(bike.id)
-      }
+        }
+      })
+      await Bicycle.update({
+        servicePointId: pointId
+      }, {
+        where: {
+          id: {
+            $in: ids
+          }
+        }
+      }).catch(() => {
+        ctx.response.status = 412
+        ctx.body = renderResponse.ERROR_412('参数错误')
+      })
+      updateList.push(bike.id)
       ctx.response.status = 200
       ctx.body = renderResponse.SUCCESS_200('以下单车绑定成功', updateList)
     } else {
