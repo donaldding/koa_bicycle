@@ -35,18 +35,19 @@ class OrderController {
       let randomNum = parseInt(Math.random() * (9999 - 1000 + 1) + 1000)
       let date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:SS')
       let num = dateFormat(new Date(), 'yyyymmddHHMM') + randomNum
-      const order = await Order.create({
+      await Order.create({
         orderNum: num,
         leaseTime: date,
         price: bike.price,
         bicycleId: bike.id,
         userId: user.id
+      }).then(result => {
+        ctx.response.status = 200
+        ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
       }).catch(() => {
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('订单生成失败，租借失败')
       })
-      ctx.response.status = 200
-      ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', order)
     } else {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('自行车已被预约')
