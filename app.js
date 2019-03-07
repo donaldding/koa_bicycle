@@ -7,6 +7,8 @@ const onerror = require('koa-onerror')
 const bodyparser = require('koa-bodyparser')
 const logger = require('koa-logger')
 const authorize = require('./app/middleware/authenticate')
+
+const path = require('path')
 require('dotenv').config({ path: path.join(__dirname, '.env') })
 
 const apiRouter = require('./routes/api')
