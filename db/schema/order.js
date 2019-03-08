@@ -2,13 +2,13 @@
 module.exports = (sequelize, DataTypes) => {
   const Order = sequelize.define('Order', {
     orderNum: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
       unique: true
     },
     price: DataTypes.INTEGER,
-    leaseTime: DataTypes.DATE,
-    returnTime: DataTypes.DATE,
+    leaseTime: DataTypes.STRING,
+    returnTime: DataTypes.STRING,
     total: DataTypes.INTEGER,
     bicycleId: {
       type: DataTypes.INTEGER,
