@@ -1,7 +1,7 @@
 module.exports = {
   apps: [{
     name: 'shared-bicycle',
-    script: 'bin/www',
+    script: 'pm2 start bin/www',
 
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     args: 'one two',

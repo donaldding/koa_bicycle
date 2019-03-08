@@ -1,9 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const userModel = require('../models/user')
-const {
-  User
-} = require('../../db/schema')
+const { User } = require('../../db/schema')
 const pagination = require('../../util/pagination')
 
 const secret = require('../../config/secret')
@@ -43,7 +41,14 @@ class UserController {
         })
 
         ctx.response.status = 200
-        ctx.body = renderResponse.SUCCESS_200('注册成功', token)
+        let { id, name, cellphone, balance } = dbUser
+        ctx.body = renderResponse.SUCCESS_200('注册成功', {
+          id,
+          name,
+          cellphone,
+          balance,
+          token
+        })
       }
     } else {
       ctx.body = renderResponse.ERROR_412('参数错误')
@@ -74,9 +79,12 @@ class UserController {
         })
 
         ctx.response.status = 200
+        let { id, name, cellphone, balance } = user
         ctx.body = renderResponse.SUCCESS_200('登录成功', {
-          id: user.id,
-          username: user.name,
+          id,
+          name,
+          cellphone,
+          balance,
           token
         })
       } else {
@@ -119,22 +127,21 @@ class UserController {
    * @returns {Promise<void>}
    */
   static async update (ctx) {
-    let {
-      name,
-      avatar,
-      gender
-    } = ctx.request.body
+    let { name, avatar, gender } = ctx.request.body
     const user = ctx.current_user
     if (user) {
-      await User.update({
-        name,
-        avatar,
-        gender
-      }, {
-        where: {
-          id: user.id
+      await User.update(
+        {
+          name,
+          avatar,
+          gender
+        },
+        {
+          where: {
+            id: user.id
+          }
         }
-      }).catch((err) => {
+      ).catch(err => {
         console.log(err)
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('参数错误')
