@@ -67,9 +67,8 @@ describe('GET /api/orders/:id/detail', () => {
       orderNum: '12345678977',
       leaseTime: '2019-03-07 11:55:55',
       price: bike.price,
-      bicycleId: bike.id,
     }, {
-      include: [Bicycle, User]
+      include: [User]
     }).then(result => {
       order = result
     })
@@ -82,7 +81,6 @@ describe('GET /api/orders/:id/detail', () => {
     const orderDetail = response.body.data
     expect(orderDetail.orderNum).toEqual('12345678977')
     expect(orderDetail.id).toEqual(order.id)
-    expect(orderDetail.bicycleId).toEqual(bike.id)
     expect(orderDetail.userId).toEqual(loginUser.body.data.id)
   })
 })
@@ -102,9 +100,8 @@ describe('GET /api/orders/list', () => {
       orderNum: '12345678997',
       leaseTime: '2019-03-07 11:55:55',
       price: bike.price,
-      bicycleId: bike.id,
     }, {
-      include: [Bicycle, User]
+      include: [User]
     })
     const response = await request(server)
       .get('/api/orders/list')
@@ -164,7 +161,6 @@ describe('GET /api/orders', () => {
       price: '150',
       state: 'ready'
     })
-    let order
     await user.createOrder({
       orderNum: '12345678779',
       leaseTime: '2019-03-07 11:55:55',
