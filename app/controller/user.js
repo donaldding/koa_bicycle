@@ -85,7 +85,8 @@ class UserController {
           name,
           cellphone,
           balance,
-          token
+          token,
+          booked_bike: user.getBicycle()
         })
       } else {
         ctx.response.status = 412
