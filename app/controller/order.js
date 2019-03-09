@@ -14,10 +14,10 @@ class OrderController {
     const user = ctx.current_user
     let { bikeId } = data
     const bike = await Bicycle.findById(bikeId)
+    let randomNum = parseInt(Math.random() * (9999 - 1000 + 1) + 1000)
+    let date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:SS')
+    let num = dateFormat(new Date(), 'yyyymmddHHMM') + randomNum
     if (bike.state === 'ready') {
-      let randomNum = parseInt(Math.random() * (9999 - 1000 + 1) + 1000)
-      let date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:SS')
-      let num = dateFormat(new Date(), 'yyyymmddHHMM') + randomNum
       let orderCreate
       await user
         .createOrder(
