@@ -61,7 +61,7 @@ class OrderController {
     } else if (bike.state == 'booked') {
       let bookedBike = await user.getBicycle()
       if (bookedBike.id === bike.id) {
-        await user.createOrder({
+        let order = await user.createOrder({
           orderNum: num,
           leaseTime: date,
           price: bike.price,
@@ -72,7 +72,7 @@ class OrderController {
           state: 'rented'
         })
         ctx.response.status = 200
-        ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
+        ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', order)
       } else {
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('自行车已被预约')
