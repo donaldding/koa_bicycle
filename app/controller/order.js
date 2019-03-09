@@ -73,6 +73,9 @@ class OrderController {
         })
         ctx.response.status = 200
         ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
+      } else {
+        ctx.response.status = 412
+        ctx.body = renderResponse.ERROR_412('自行车已被预约')
       }
     } else {
       ctx.response.status = 412
