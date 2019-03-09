@@ -1,6 +1,8 @@
 const server = require('./server')
 const request = require('supertest')
-const { Bicycle } = require('../db/schema')
+const {
+  Bicycle
+} = require('../db/schema')
 const truncate = require('./truncate')
 const login = require('./login')
 
@@ -189,5 +191,28 @@ describe('POST /api/bicycles/:id/book', () => {
 
     expect(response.status).toEqual(412)
     expect(response.type).toEqual('application/json')
+  })
+})
+
+describe('GET /api/bicycles/book', () => {
+  test('should return user book list', async () => {
+    const createUser = await login()
+    bicyle = await Bicycle.create({
+      num: '1234',
+      lat: '12.34',
+      lng: '123.4',
+      state: 'ready',
+      price: 150
+    })
+    await request(server)
+      .post(`/api/bicycles/${bicyle.id}/book`)
+      .set('Authorization', createUser.body.data.token)
+
+    const response = await request(server)
+      .get('/api/bicycles/book')
+      .set('Authorization', createUser.body.data.token)
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.data.length).toEqual(1)
   })
 })

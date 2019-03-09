@@ -88,6 +88,11 @@ describe('GET /api/orders/:id/detail', () => {
     expect(orderDetail.orderNum).toEqual('12345678977')
     expect(orderDetail.id).toEqual(order.id)
     expect(orderDetail.userId).toEqual(loginUser.body.data.id)
+    return Order.destroy({
+      'where': {
+        'id': order.id
+      }
+    })
   })
 })
 
