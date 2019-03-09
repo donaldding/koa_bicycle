@@ -1,11 +1,6 @@
 const renderResponse = require('../../util/renderJson')
-const {
-  User,
-  Order
-} = require('../../db/schema')
-const {
-  Bicycle
-} = require('../../db/schema')
+const { User, Order } = require('../../db/schema')
+const { Bicycle } = require('../../db/schema')
 const dateFormat = require('dateformat')
 const pagination = require('../../util/pagination')
 
@@ -17,9 +12,7 @@ class OrderController {
   static async create (ctx) {
     const data = ctx.request.body
     const user = ctx.current_user
-    let {
-      bikeId
-    } = data
+    let { bikeId } = data
     const bike = await Bicycle.findById(bikeId)
     if (bike.state === 'ready') {
       let randomNum = parseInt(Math.random() * (9999 - 1000 + 1) + 1000)
@@ -27,15 +20,18 @@ class OrderController {
       let num = dateFormat(new Date(), 'yyyymmddHHMM') + randomNum
       let orderCreate
       await user
-        .createOrder({
-          orderNum: num,
-          leaseTime: date,
-          price: bike.price,
-          bicycleId: bike.id,
-          state: 'renting'
-        }, {
-          include: [Bicycle, User]
-        })
+        .createOrder(
+          {
+            orderNum: num,
+            leaseTime: date,
+            price: bike.price,
+            bicycleId: bike.id,
+            state: 'renting'
+          },
+          {
+            include: [Bicycle, User]
+          }
+        )
         .then(result => {
           ctx.response.status = 200
           ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
@@ -47,17 +43,36 @@ class OrderController {
           orderCreate = false
         })
       if (orderCreate) {
-        await Bicycle.update({
-          state: 'rented'
-        }, {
-          where: {
-            id: bike.id
+        await Bicycle.update(
+          {
+            state: 'rented'
+          },
+          {
+            where: {
+              id: bike.id
+            }
           }
-        }).catch(() => {
+        ).catch(() => {
           ctx.response.status = 412
           ctx.body = renderResponse.ERROR_412('参数错误')
         })
         await bike.reload()
+      }
+    } else if (bike.state == 'booked') {
+      let bookedBike = await user.getBicycle()
+      if (bookedBike.id === bike.id) {
+        await user.createOrder({
+          orderNum: num,
+          leaseTime: date,
+          price: bike.price,
+          bicycleId: bike.id,
+          state: 'renting'
+        })
+        await bookedBike.update({
+          state: 'rented'
+        })
+        ctx.response.status = 200
+        ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
       }
     } else {
       ctx.response.status = 412
@@ -71,9 +86,7 @@ class OrderController {
    */
   static async finishOrder (ctx) {
     const user = ctx.current_user
-    let {
-      bikeId
-    } = ctx.request.body
+    let { bikeId } = ctx.request.body
     const bike = await Bicycle.findById(bikeId)
     const order = await Order.findById(ctx.params.id)
     const startTime = new Date(order.leaseTime)
@@ -82,11 +95,12 @@ class OrderController {
     const cost = time * order.price
     let orderEnd
     if (order.userId === user.id && order.state === 'renting') {
-      await order.update({
-        returnTime: dateFormat(endTime, 'yyyy-mm-dd HH:MM:SS'),
-        total: cost,
-        state: 'finish'
-      })
+      await order
+        .update({
+          returnTime: dateFormat(endTime, 'yyyy-mm-dd HH:MM:SS'),
+          total: cost,
+          state: 'finish'
+        })
         .then(result => {
           ctx.response.status = 200
           ctx.body = renderResponse.SUCCESS_200('归还成功', result)
@@ -104,13 +118,16 @@ class OrderController {
     }
 
     if (orderEnd) {
-      await Bicycle.update({
-        state: 'ready'
-      }, {
-        where: {
-          id: bike.id
+      await Bicycle.update(
+        {
+          state: 'ready'
+        },
+        {
+          where: {
+            id: bike.id
+          }
         }
-      }).catch(() => {
+      ).catch(() => {
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('参数错误')
       })
