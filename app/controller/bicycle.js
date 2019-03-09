@@ -3,6 +3,7 @@ const {
   sequelize,
   Bicycle
 } = require('../../db/schema')
+const pagination = require('../../util/pagination')
 class BicycleController {
   /**
    * 创建单车
@@ -131,6 +132,36 @@ class BicycleController {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('自行车已经被预约')
     }
+  }
+
+  /**
+   * 获取用户预约的单车列表
+   * @param {*} ctx
+   */
+  static async bookList (ctx) {
+    const user = ctx.current_user
+    const datas = ctx.request.body
+    let meta
+    const page = datas.page ? datas.page : 1
+    const perPage = datas.per_page ? datas.per_page : 20
+    await Bicycle.findAndCountAll({
+      where: {
+        userId: user.id
+      },
+      offset: 20 * (page - 1),
+      limit: perPage
+    }).then(result => {
+      meta = {
+        page: pagination(result.count, perPage),
+        per_page: perPage,
+        current_page: page
+      }
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('', result.rows, meta)
+    }).catch(() => {
+      ctx.response.status = 412
+      ctx.body = renderResponse.ERROR_412('参数错误')
+    })
   }
 }
 
