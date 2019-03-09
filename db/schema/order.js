@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     leaseTime: DataTypes.STRING,
     returnTime: DataTypes.STRING,
     total: DataTypes.INTEGER,
+    state: DataTypes.STRING,
     bicycleId: {
       type: DataTypes.INTEGER,
       references: {

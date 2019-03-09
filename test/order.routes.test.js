@@ -47,7 +47,6 @@ describe('POST /api/orders/renting', () => {
     return Order.findAll().then(datas => {
       expect(datas.length).toEqual(1)
     })
-
   })
 })
 
@@ -63,15 +62,17 @@ describe('GET /api/orders/:id/detail', () => {
       state: 'ready'
     })
     let order
-    await user.createOrder({
-      orderNum: '12345678977',
-      leaseTime: '2019-03-07 11:55:55',
-      price: bike.price,
-    }, {
-      include: [User]
-    }).then(result => {
-      order = result
-    })
+    await user
+      .createOrder({
+        orderNum: '12345678977',
+        leaseTime: '2019-03-07 11:55:55',
+        price: bike.price
+      }, {
+        include: [User]
+      })
+      .then(result => {
+        order = result
+      })
     const response = await request(server)
       .get(`/api/orders/${order.id}/detail`)
       .set('Authorization', loginUser.body.data.token)
@@ -99,7 +100,7 @@ describe('GET /api/orders/list', () => {
     await user.createOrder({
       orderNum: '12345678997',
       leaseTime: '2019-03-07 11:55:55',
-      price: bike.price,
+      price: bike.price
     }, {
       include: [User]
     })
@@ -126,16 +127,19 @@ describe('POST /api/orders/:id/return', () => {
       state: 'ready'
     })
     let order
-    await user.createOrder({
-      orderNum: '12345678997',
-      leaseTime: '2019-03-07 11:55:55',
-      price: bike.price,
-      bicycleId: bike.id,
-    }, {
-      include: [Bicycle, User]
-    }).then(result => {
-      order = result
-    })
+    await user
+      .createOrder({
+        orderNum: '12345678997',
+        leaseTime: '2019-03-07 11:55:55',
+        price: bike.price,
+        state: 'renting',
+        bicycleId: bike.id
+      }, {
+        include: [Bicycle, User]
+      })
+      .then(result => {
+        order = result
+      })
     const response = await request(server)
       .post(`/api/orders/${order.id}/return`)
       .set('Authorization', loginUser.body.data.token)
@@ -165,6 +169,7 @@ describe('GET /api/orders', () => {
       orderNum: '12345678779',
       leaseTime: '2019-03-07 11:55:55',
       price: bike.price,
+      state: 'renting'
     }, {
       include: [User]
     })
@@ -172,7 +177,8 @@ describe('GET /api/orders', () => {
       orderNum: '12345666679',
       leaseTime: '2019-03-07 11:55:55',
       price: '150',
-      returnTime: '2019-03-07 11:59:59'
+      returnTime: '2019-03-07 11:59:59',
+      state: 'finish'
     })
     const response = await request(server)
       .get('/api/orders/')
