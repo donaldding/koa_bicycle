@@ -1,12 +1,20 @@
 const renderResponse = require('../../util/renderJson')
-const { sequelize, Bicycle } = require('../../db/schema')
+const {
+  sequelize,
+  Bicycle
+} = require('../../db/schema')
 class BicycleController {
   /**
    * 创建单车
    * @param {*} ctx
    */
   static async create (ctx) {
-    let { num, lat, lng, price } = ctx.request.body
+    let {
+      num,
+      lat,
+      lng,
+      price
+    } = ctx.request.body
 
     const bike = await Bicycle.build({
       num,
@@ -34,7 +42,10 @@ class BicycleController {
    * @param {*} ctx
    */
   static async nearby (ctx) {
-    const { lat, lng } = ctx.query
+    const {
+      lat,
+      lng
+    } = ctx.query
     if (!lat || !lng) {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('参数错误')
@@ -52,9 +63,13 @@ class BicycleController {
 
     const datas = await Bicycle.findAll({
       attributes: {
-        include: [[distance, 'distance']]
+        include: [
+          [distance, 'distance']
+        ]
       },
-      where: sequelize.where(distance, { $lte: 3000 }),
+      where: sequelize.where(distance, {
+        $lte: 3000
+      }),
       order: sequelize.literal('distance ASC')
     })
     ctx.response.status = 200
@@ -68,7 +83,12 @@ class BicycleController {
   static async update (ctx) {
     const bike = await Bicycle.findById(ctx.params.id)
 
-    let { num, lat, lng, price } = ctx.request.body
+    let {
+      num,
+      lat,
+      lng,
+      price
+    } = ctx.request.body
 
     await bike
       .update({
@@ -93,23 +113,20 @@ class BicycleController {
   static async book (ctx) {
     const bike = await Bicycle.findById(ctx.params.id)
     if (bike.state === 'ready') {
-      await Bicycle.update(
-        {
-          state: 'booked',
-          userId: ctx.current_user.id
-        },
-        {
-          where: {
-            id: bike.id
-          }
+      await Bicycle.update({
+        state: 'booked',
+        userId: ctx.current_user.id
+      }, {
+        where: {
+          id: bike.id
         }
-      ).catch(() => {
+      }).catch(() => {
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('参数错误')
       })
       await bike.reload()
       ctx.response.status = 200
-      ctx.body = renderResponse.SUCCESS_200('修改成功', bike)
+      ctx.body = renderResponse.SUCCESS_200('预约成功', bike)
     } else {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('自行车已经被预约')

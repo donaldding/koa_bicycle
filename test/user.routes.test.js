@@ -11,7 +11,7 @@ afterAll(() => {
   server.close()
 })
 beforeEach(async () => {
-  truncate()
+  await truncate()
 })
 afterEach(async () => {
   await truncate()

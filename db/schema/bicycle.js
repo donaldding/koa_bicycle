@@ -46,6 +46,9 @@ module.exports = (sequelize, DataTypes) => {
     Bicycle.belongsTo(models['ServicePoints'], {
       foreignKey: 'servicePointId'
     })
+    Bicycle.hasMany(models['Order'], {
+      foreignKey: 'bicycleId'
+    })
   }
   return Bicycle
 }
