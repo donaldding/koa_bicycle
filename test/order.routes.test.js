@@ -44,8 +44,13 @@ describe('POST /api/orders/renting', () => {
     expect(order.bicycleId).toEqual(bike.id)
     expect(order.userId).toEqual(loginUser.body.data.id)
     expect(bikeState.state).toEqual('rented')
-    return Order.findAll().then(datas => {
+    await Order.findAll().then(datas => {
       expect(datas.length).toEqual(1)
+    })
+    return Order.destroy({
+      'where': {
+        'id': order.id
+      }
     })
   })
 })
@@ -148,8 +153,13 @@ describe('POST /api/orders/:id/return', () => {
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    return await Bicycle.findById(bike.id).then(result => {
+    await Bicycle.findById(bike.id).then(result => {
       expect(result.state).toEqual('ready')
+    })
+    return Order.destroy({
+      'where': {
+        'id': order.id
+      }
     })
   })
 })

@@ -80,12 +80,14 @@ class UserController {
 
         ctx.response.status = 200
         let { id, name, cellphone, balance } = user
+        let booked_bike = await user.getBicycle()
         ctx.body = renderResponse.SUCCESS_200('登录成功', {
           id,
           name,
           cellphone,
           balance,
-          token
+          token,
+          booked_bike
         })
       } else {
         ctx.response.status = 412
