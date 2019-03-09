@@ -175,7 +175,10 @@ class OrderController {
     const page = data.page ? data.page : 1
     const perPage = data.per_page ? data.per_page : 20
     if (user.is_admin) {
-      await Order.findAndCountAll().then(result => {
+      await Order.findAndCountAll({
+        offset: 20 * (page - 1),
+        limit: perPage
+      }).then(result => {
         list = result.rows
         meta = {
           page: pagination(result.count, perPage),

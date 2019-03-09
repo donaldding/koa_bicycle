@@ -145,7 +145,11 @@ class BicycleController {
     const page = datas.page ? datas.page : 1
     const perPage = datas.per_page ? datas.per_page : 20
     await Bicycle.findAndCountAll({
-      userId: user.id
+      where: {
+        userId: user.id
+      },
+      offset: 20 * (page - 1),
+      limit: perPage
     }).then(result => {
       meta = {
         page: pagination(result.count, perPage),
