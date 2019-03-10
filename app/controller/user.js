@@ -20,8 +20,8 @@ class UserController {
       const existUser = await userModel.findUserByCellphone(user.cellphone)
       if (existUser) {
         // 反馈存在用户名
-        ctx.response.status = 403
-        ctx.body = renderResponse.ERROR_403('用户已经存在')
+        ctx.response.status = 200
+        ctx.body = renderResponse.SUCCESS(-1, '用户已经存在', {})
       } else {
         // 加密密码
         const salt = bcrypt.genSaltSync()
