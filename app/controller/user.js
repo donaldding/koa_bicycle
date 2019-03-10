@@ -143,7 +143,7 @@ class UserController {
           name,
           avatar,
           gender,
-          balance: balance + user.balance
+          balance: balance
         },
         {
           where: {
