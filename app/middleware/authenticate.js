@@ -10,8 +10,8 @@ module.exports = function () {
       let userId
       await jwt.verify(token, secret.sign, (err, decoded) => {
         if (err) {
-          ctx.response.status = 200
-          ctx.body = renderJson.SUCCESS(403, '未授权', {})
+          ctx.response.status = 403
+          ctx.body = renderJson.SUCCESS(403, '未授权', [])
           return
         }
         userId = decoded.id
