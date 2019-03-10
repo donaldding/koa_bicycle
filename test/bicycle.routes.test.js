@@ -1,8 +1,6 @@
 const server = require('./server')
 const request = require('supertest')
-const {
-  Bicycle
-} = require('../db/schema')
+const { Bicycle } = require('../db/schema')
 const truncate = require('./truncate')
 const login = require('./login')
 
@@ -113,7 +111,6 @@ describe('GET /api/bicycles/nearby', () => {
     expect(response.type).toEqual('application/json')
     expect(response.body.data.length).toEqual(3)
 
-    console.log(response.body.data)
     expect(response.body.data[0].num).toEqual(bike1.num)
     expect(response.body.data[1].num).toEqual(bike3.num)
     expect(response.body.data[2].num).toEqual(bike2.num)

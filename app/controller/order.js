@@ -1,6 +1,5 @@
 const renderResponse = require('../../util/renderJson')
-const { User, Order } = require('../../db/schema')
-const { Bicycle } = require('../../db/schema')
+const { User, Order, Bicycle } = require('../../db/schema')
 const dateFormat = require('dateformat')
 const pagination = require('../../util/pagination')
 
@@ -148,7 +147,8 @@ class OrderController {
         userId: user.id
       },
       offset: 20 * (page - 1),
-      limit: perPage
+      limit: perPage,
+      include: [Bicycle]
     }).then(result => {
       list = result.rows
       meta = {

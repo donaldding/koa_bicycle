@@ -1,10 +1,6 @@
 const server = require('./server')
 const request = require('supertest')
-const {
-  Order,
-  Bicycle,
-  User
-} = require('../db/schema')
+const { Order, Bicycle, User } = require('../db/schema')
 const truncate = require('./truncate')
 const login = require('./login')
 
@@ -48,8 +44,8 @@ describe('POST /api/orders/renting', () => {
       expect(datas.length).toEqual(1)
     })
     return Order.destroy({
-      'where': {
-        'id': order.id
+      where: {
+        id: order.id
       }
     })
   })
@@ -68,13 +64,16 @@ describe('GET /api/orders/:id/detail', () => {
     })
     let order
     await user
-      .createOrder({
-        orderNum: '12345678977',
-        leaseTime: '2019-03-07 11:55:55',
-        price: bike.price
-      }, {
-        include: [User]
-      })
+      .createOrder(
+        {
+          orderNum: '12345678977',
+          leaseTime: '2019-03-07 11:55:55',
+          price: bike.price
+        },
+        {
+          include: [User]
+        }
+      )
       .then(result => {
         order = result
       })
@@ -89,8 +88,8 @@ describe('GET /api/orders/:id/detail', () => {
     expect(orderDetail.id).toEqual(order.id)
     expect(orderDetail.userId).toEqual(loginUser.body.data.id)
     return Order.destroy({
-      'where': {
-        'id': order.id
+      where: {
+        id: order.id
       }
     })
   })
@@ -107,13 +106,12 @@ describe('GET /api/orders/list', () => {
       price: '150',
       state: 'ready'
     })
-    await user.createOrder({
+    let order = await user.createOrder({
       orderNum: '12345678997',
       leaseTime: '2019-03-07 11:55:55',
       price: bike.price
-    }, {
-      include: [User]
     })
+    order.setBicycle(bike)
     const response = await request(server)
       .get('/api/orders/list')
       .set('Authorization', loginUser.body.data.token)
@@ -121,6 +119,8 @@ describe('GET /api/orders/list', () => {
     expect(response.type).toEqual('application/json')
     const orderList = response.body.data
     expect(orderList.length).toEqual(1)
+    expect(orderList[0].orderNum).toEqual('12345678997')
+    expect(orderList[0].Bicycle.num).toEqual('123')
     expect(response.body.meta.per_page).toEqual(20)
   })
 })
@@ -138,15 +138,18 @@ describe('POST /api/orders/:id/return', () => {
     })
     let order
     await user
-      .createOrder({
-        orderNum: '12345678997',
-        leaseTime: '2019-03-07 11:55:55',
-        price: bike.price,
-        state: 'renting',
-        bicycleId: bike.id
-      }, {
-        include: [Bicycle, User]
-      })
+      .createOrder(
+        {
+          orderNum: '12345678997',
+          leaseTime: '2019-03-07 11:55:55',
+          price: bike.price,
+          state: 'renting',
+          bicycleId: bike.id
+        },
+        {
+          include: [Bicycle, User]
+        }
+      )
       .then(result => {
         order = result
       })
@@ -160,11 +163,6 @@ describe('POST /api/orders/:id/return', () => {
     expect(response.type).toEqual('application/json')
     await Bicycle.findById(bike.id).then(result => {
       expect(result.state).toEqual('ready')
-    })
-    return Order.destroy({
-      'where': {
-        'id': order.id
-      }
     })
   })
 })
@@ -180,14 +178,17 @@ describe('GET /api/orders', () => {
       price: '150',
       state: 'ready'
     })
-    await user.createOrder({
-      orderNum: '12345678779',
-      leaseTime: '2019-03-07 11:55:55',
-      price: bike.price,
-      state: 'renting'
-    }, {
-      include: [User]
-    })
+    await user.createOrder(
+      {
+        orderNum: '12345678779',
+        leaseTime: '2019-03-07 11:55:55',
+        price: bike.price,
+        state: 'renting'
+      },
+      {
+        include: [User]
+      }
+    )
     await user.createOrder({
       orderNum: '12345666679',
       leaseTime: '2019-03-07 11:55:55',
