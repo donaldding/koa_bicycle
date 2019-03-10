@@ -97,6 +97,11 @@ class OrderController {
     if (isNaN(cost)) {
       cost = bike.price
     }
+    if (user.balance < cost) {
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS(-1, '余额不足，请先充值', {})
+      return
+    }
 
     if (order.userId === user.id && order.state === 'renting') {
       let updatdOrder = await order.update({

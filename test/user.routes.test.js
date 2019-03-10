@@ -28,7 +28,7 @@ describe('POST /api/session/sign_up', () => {
         password: '123456',
         name: 'test',
         gender: 'f',
-        is_admin: true,
+        is_admin: true
       })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
@@ -70,7 +70,7 @@ describe('POST /api/users/update', () => {
     expect(response.body.data.name).toEqual('test1')
     expect(response.body.data.avatar).toEqual('www.baidu.com')
     expect(response.body.data.gender).toEqual('g')
-    expect(response.body.data.balance).toEqual(null)
+    expect(response.body.data.balance).toEqual(123)
   })
 })
 

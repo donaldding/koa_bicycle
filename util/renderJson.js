@@ -25,6 +25,13 @@ const renderResp = {
     msg,
     data,
     meta
+  }),
+
+  SUCCESS: (code, msg, data, meta = {}) => ({
+    code,
+    msg,
+    data,
+    meta
   })
 }
 

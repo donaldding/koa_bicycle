@@ -10,8 +10,8 @@ module.exports = function () {
       let userId
       await jwt.verify(token, secret.sign, (err, decoded) => {
         if (err) {
-          ctx.response.status = 401
-          ctx.body = renderJson.ERROR_401('未授权')
+          ctx.response.status = 200
+          ctx.body = renderJson.SUCCESS(403, '未授权', {})
           return
         }
         userId = decoded.id
@@ -21,7 +21,7 @@ module.exports = function () {
         return next()
       }
     }
-    ctx.response.status = 401
-    ctx.body = renderJson.ERROR_401('未授权')
+    ctx.response.status = 200
+    ctx.body = renderJson.SUCCESS(403, '未授权', {})
   }
 }

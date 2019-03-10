@@ -129,6 +129,9 @@ describe('POST /api/orders/:id/return', () => {
   test('return Bicycle', async () => {
     const loginUser = await login()
     const user = await User.findById(loginUser.body.data.id)
+    await user.update({
+      balance: 1000
+    })
     const bike = await Bicycle.create({
       num: '123',
       lat: '11.1',
