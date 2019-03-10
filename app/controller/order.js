@@ -158,7 +158,10 @@ class OrderController {
       },
       offset: 20 * (page - 1),
       limit: perPage,
-      include: [Bicycle]
+      include: [Bicycle],
+      order: [
+        ['state', 'DESC']
+      ]
     }).then(result => {
       list = result.rows
       meta = {
