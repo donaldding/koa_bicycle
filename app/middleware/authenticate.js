@@ -21,7 +21,7 @@ module.exports = function () {
         return next()
       }
     }
-    ctx.response.status = 200
-    ctx.body = renderJson.SUCCESS(403, '未授权', {})
+    ctx.response.status = 403
+    ctx.body = renderJson.SUCCESS(403, '未授权', [])
   }
 }
