@@ -109,6 +109,9 @@ class OrderController {
         total: cost,
         state: 'finish'
       })
+      await user.update({
+        balance: user.balance - cost
+      })
       await bike.update({
         state: 'ready'
       })
