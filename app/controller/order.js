@@ -96,28 +96,18 @@ class OrderController {
     const endTime = new Date()
     const time = Math.ceil((endTime - startTime) / 1000 / 60)
     const cost = time * order.price
-    let orderEnd
+
     if (order.userId === user.id && order.state === 'renting') {
-      await order
-        .update({
-          returnTime: dateFormat(endTime, 'yyyy-mm-dd HH:MM:SS'),
-          total: cost,
-          state: 'finish'
-        })
-        .then(result => {
-          await bike.update(
-            {
-              state: 'ready'
-            }
-          )
-          ctx.response.status = 200
-          ctx.body = renderResponse.SUCCESS_200('归还成功', result)
-        })
-        .catch(() => {
-          ctx.response.status = 412
-          ctx.body = renderResponse.ERROR_412('参数错误')
-          orderEnd = false
-        })
+      let updatdOrder = await order.update({
+        returnTime: dateFormat(endTime, 'yyyy-mm-dd HH:MM:SS'),
+        total: cost,
+        state: 'finish'
+      })
+      await bike.update({
+        state: 'ready'
+      })
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('归还成功', updatdOrder)
     } else {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('只能结束自己进行中的订单')
