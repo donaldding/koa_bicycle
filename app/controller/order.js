@@ -88,9 +88,8 @@ class OrderController {
    */
   static async finishOrder (ctx) {
     const user = ctx.current_user
-    let { bikeId } = ctx.request.body
-    const bike = await Bicycle.findById(bikeId)
     const order = await Order.findById(ctx.params.id)
+    const bike = await order.getBicycle()
     const startTime = new Date(order.leaseTime)
     const endTime = new Date()
     const time = Math.ceil((endTime - startTime) / 1000 / 60)
