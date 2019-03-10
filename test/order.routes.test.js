@@ -133,34 +133,28 @@ describe('POST /api/orders/:id/return', () => {
       num: '123',
       lat: '11.1',
       lng: '222.3',
-      price: '150',
+      price: 150,
       state: 'ready'
     })
-    let order
-    await user
-      .createOrder(
-        {
-          orderNum: '12345678997',
-          leaseTime: '2019-03-07 11:55:55',
-          price: bike.price,
-          state: 'renting',
-          bicycleId: bike.id
-        },
-        {
-          include: [Bicycle, User]
-        }
-      )
-      .then(result => {
-        order = result
-      })
+    let order = await user.createOrder(
+      {
+        orderNum: '12345678997',
+        leaseTime: '2019-03-07 11:55:55',
+        price: bike.price,
+        state: 'renting',
+        bicycleId: bike.id
+      },
+      {
+        include: [Bicycle, User]
+      }
+    )
     const response = await request(server)
       .post(`/api/orders/${order.id}/return`)
       .set('Authorization', loginUser.body.data.token)
-      .send({
-        bikeId: bike.id
-      })
+
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
+    console.log('-----------', response.body.data)
     await Bicycle.findById(bike.id).then(result => {
       expect(result.state).toEqual('ready')
     })

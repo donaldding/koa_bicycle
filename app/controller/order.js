@@ -93,7 +93,10 @@ class OrderController {
     const startTime = new Date(order.leaseTime)
     const endTime = new Date()
     const time = Math.ceil((endTime - startTime) / 1000 / 60)
-    const cost = time * order.price
+    var cost = time * order.price
+    if (isNaN(cost)) {
+      cost = bike.price
+    }
 
     if (order.userId === user.id && order.state === 'renting') {
       let updatdOrder = await order.update({
