@@ -105,9 +105,13 @@ class OrderController {
           state: 'finish'
         })
         .then(result => {
+          await bike.update(
+            {
+              state: 'ready'
+            }
+          )
           ctx.response.status = 200
           ctx.body = renderResponse.SUCCESS_200('归还成功', result)
-          orderEnd = true
         })
         .catch(() => {
           ctx.response.status = 412
@@ -118,22 +122,6 @@ class OrderController {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('只能结束自己进行中的订单')
       orderEnd = false
-    }
-
-    if (orderEnd) {
-      await Bicycle.update(
-        {
-          state: 'ready'
-        },
-        {
-          where: {
-            id: bike.id
-          }
-        }
-      ).catch(() => {
-        ctx.response.status = 412
-        ctx.body = renderResponse.ERROR_412('参数错误')
-      })
     }
   }
 
