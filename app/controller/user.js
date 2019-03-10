@@ -131,6 +131,12 @@ class UserController {
   static async update (ctx) {
     let { name, avatar, gender, balance } = ctx.request.body
     const user = ctx.current_user
+
+    if (balance) {
+      balance = user.balance + balance
+    } else {
+      balance = user.balance
+    }
     if (user) {
       await User.update(
         {
