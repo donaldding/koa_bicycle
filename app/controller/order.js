@@ -1,5 +1,9 @@
 const renderResponse = require('../../util/renderJson')
-const { User, Order, Bicycle } = require('../../db/schema')
+const {
+  User,
+  Order,
+  Bicycle
+} = require('../../db/schema')
 const dateFormat = require('dateformat')
 const pagination = require('../../util/pagination')
 
@@ -11,7 +15,9 @@ class OrderController {
   static async create (ctx) {
     const data = ctx.request.body
     const user = ctx.current_user
-    let { bikeId } = data
+    let {
+      bikeId
+    } = data
     const bike = await Bicycle.findById(bikeId)
     let randomNum = parseInt(Math.random() * (9999 - 1000 + 1) + 1000)
     let date = dateFormat(new Date(), 'yyyy-mm-dd HH:MM:SS')
@@ -19,18 +25,15 @@ class OrderController {
     if (bike.state === 'ready') {
       let orderCreate
       await user
-        .createOrder(
-          {
-            orderNum: num,
-            leaseTime: date,
-            price: bike.price,
-            bicycleId: bike.id,
-            state: 'renting'
-          },
-          {
-            include: [Bicycle, User]
-          }
-        )
+        .createOrder({
+          orderNum: num,
+          leaseTime: date,
+          price: bike.price,
+          bicycleId: bike.id,
+          state: 'renting'
+        }, {
+          include: [Bicycle, User]
+        })
         .then(result => {
           ctx.response.status = 200
           ctx.body = renderResponse.SUCCESS_200('订单生成成功,租借成功', result)
@@ -42,22 +45,19 @@ class OrderController {
           orderCreate = false
         })
       if (orderCreate) {
-        await Bicycle.update(
-          {
-            state: 'rented'
-          },
-          {
-            where: {
-              id: bike.id
-            }
+        await Bicycle.update({
+          state: 'rented'
+        }, {
+          where: {
+            id: bike.id
           }
-        ).catch(() => {
+        }).catch(() => {
           ctx.response.status = 412
           ctx.body = renderResponse.ERROR_412('参数错误')
         })
         await bike.reload()
       }
-    } else if (bike.state == 'booked') {
+    } else if (bike.state === 'booked') {
       let bookedBike = await user.getBicycle()
       if (bookedBike.id === bike.id) {
         let order = await user.createOrder({
@@ -120,7 +120,6 @@ class OrderController {
     } else {
       ctx.response.status = 412
       ctx.body = renderResponse.ERROR_412('只能结束自己进行中的订单')
-      orderEnd = false
     }
   }
 
