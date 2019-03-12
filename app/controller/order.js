@@ -145,7 +145,7 @@ class OrderController {
    */
   static async userAllOrder (ctx) {
     const user = ctx.current_user
-    const data = ctx.request.body
+    const data = ctx.request.query
     let list
     let meta
     const page = data.page ? data.page : 1
@@ -179,7 +179,7 @@ class OrderController {
    */
   static async getAllOrder (ctx) {
     const user = ctx.current_user
-    const data = ctx.request.body
+    const data = ctx.request.query
     let list
     let meta
     const page = data.page ? data.page : 1

@@ -140,7 +140,7 @@ class BicycleController {
    */
   static async bookList (ctx) {
     const user = ctx.current_user
-    const datas = ctx.request.body
+    const datas = ctx.request.query
     let meta
     const page = datas.page ? datas.page : 1
     const perPage = datas.per_page ? datas.per_page : 20

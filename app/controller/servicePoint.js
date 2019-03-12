@@ -42,7 +42,7 @@ class ServicepointController {
    */
   static async all (ctx) {
     const user = ctx.current_user
-    const data = ctx.request.body
+    const data = ctx.request.query
     if (user.is_admin) {
       let list
       let meta
@@ -162,7 +162,7 @@ class ServicepointController {
   static async allBicycle (ctx) {
     const user = ctx.current_user
     const pointId = ctx.params.id
-    const data = ctx.request.body
+    const data = ctx.request.query
     if (user.is_admin) {
       let list
       let meta

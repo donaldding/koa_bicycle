@@ -108,14 +108,11 @@ describe('GET /api/users/all', () => {
     }
 
     const response = await request(server)
-      .get('/api/users/all')
+      .get('/api/users/all/?per_page=21')
       .set('Authorization', loginUser.body.data.token)
-      .send({
-        per_page: 21
-      })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    expect(response.body.meta.per_page).toEqual(21)
+    expect(response.body.meta.per_page).toEqual('21')
     expect(response.body.data.length).toEqual(21)
   })
   test('should return users(When send page)', async () => {
@@ -126,11 +123,8 @@ describe('GET /api/users/all', () => {
     }
 
     const response = await request(server)
-      .get('/api/users/all')
+      .get('/api/users/all/?page=2')
       .set('Authorization', loginUser.body.data.token)
-      .send({
-        page: 2
-      })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.meta.page).toEqual(2)

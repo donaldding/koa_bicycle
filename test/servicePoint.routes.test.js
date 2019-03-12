@@ -72,14 +72,11 @@ describe('GET /api/servicePoints', () => {
       await createPoint(i)
     }
     const response = await request(server)
-      .get('/api/servicePoints')
+      .get(`/api/servicePoints/?page=2`)
       .set('Authorization', loginUser.body.data.token)
-      .send({
-        page: 2
-      })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
-    expect(response.body.meta.current_page).toEqual(2)
+    expect(response.body.meta.current_page).toEqual('2')
     expect(response.body.data.length).toEqual(2)
   })
   test('should return points(when send per_page)', async () => {
@@ -88,15 +85,12 @@ describe('GET /api/servicePoints', () => {
       await createPoint(i)
     }
     const response = await request(server)
-      .get('/api/servicePoints')
+      .get('/api/servicePoints/?per_page=22')
       .set('Authorization', loginUser.body.data.token)
-      .send({
-        per_page: 22,
-      })
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.meta.page).toEqual(1)
-    expect(response.body.meta.per_page).toEqual(22)
+    expect(response.body.meta.per_page).toEqual('22')
     expect(response.body.data.length).toEqual(22)
   })
 })
