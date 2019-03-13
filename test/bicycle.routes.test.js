@@ -1,6 +1,8 @@
 const server = require('./server')
 const request = require('supertest')
-const { Bicycle } = require('../db/schema')
+const {
+  Bicycle
+} = require('../db/schema')
 const truncate = require('./truncate')
 const login = require('./login')
 
@@ -61,6 +63,31 @@ describe('GET /api/bicycles', () => {
     expect(response.body.data.length).toEqual(1)
     const resp_bike = response.body.data[0]
     expect(resp_bike.num).toEqual('1234')
+    expect(resp_bike.lat).toEqual(12.34)
+    expect(resp_bike.lng).toEqual(123.4)
+    expect(resp_bike.state).toEqual('ready')
+    expect(resp_bike.price).toEqual(150)
+  })
+  test('should return bicycles (when send per_page)', async () => {
+    const createUser = await login()
+    for (let i = 0; i <= 22; i++) {
+      await Bicycle.create({
+        num: '1234' + i,
+        lat: '12.34',
+        lng: '123.4',
+        state: 'ready',
+        price: 150
+      })
+    }
+    const response = await request(server)
+      .get('/api/bicycles/?per_page=22')
+      .set('Authorization', createUser.body.data.token)
+    expect(response.status).toEqual(200)
+    expect(response.type).toEqual('application/json')
+    expect(response.body.data.length).toEqual(22)
+    expect(response.body.meta.per_page).toEqual('22')
+    const resp_bike = response.body.data[0]
+    expect(resp_bike.num).toEqual('12340')
     expect(resp_bike.lat).toEqual(12.34)
     expect(resp_bike.lng).toEqual(123.4)
     expect(resp_bike.state).toEqual('ready')

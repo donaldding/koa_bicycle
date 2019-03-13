@@ -33,9 +33,25 @@ class BicycleController {
    * @param {*} ctx
    */
   static async all (ctx) {
-    const datas = await Bicycle.findAll()
-    ctx.response.status = 200
-    ctx.body = renderResponse.SUCCESS_200('', datas)
+    const pageData = ctx.request.query
+    let list
+    let meta
+    const page = pageData.page ? pageData.page : 1
+    const perPage = pageData.per_page ? pageData.per_page : 20
+
+    await Bicycle.findAndCountAll({
+      offset: 20 * (page - 1),
+      limit: perPage
+    }).then(result => {
+      list = result.rows
+      meta = {
+        page: pagination(result.count, perPage),
+        per_page: perPage,
+        current_page: page
+      }
+      ctx.response.status = 200
+      ctx.body = renderResponse.SUCCESS_200('', list, meta)
+    })
   }
 
   /**
