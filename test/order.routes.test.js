@@ -1,6 +1,10 @@
 const server = require('./server')
 const request = require('supertest')
-const { Order, Bicycle, User } = require('../db/schema')
+const {
+  Order,
+  Bicycle,
+  User
+} = require('../db/schema')
 const truncate = require('./truncate')
 const login = require('./login')
 
@@ -64,16 +68,13 @@ describe('GET /api/orders/:id/detail', () => {
     })
     let order
     await user
-      .createOrder(
-        {
-          orderNum: '12345678977',
-          leaseTime: '2019-03-07 11:55:55',
-          price: bike.price
-        },
-        {
-          include: [User]
-        }
-      )
+      .createOrder({
+        orderNum: '12345678977',
+        leaseTime: '2019-03-07 11:55:55',
+        price: bike.price
+      }, {
+        include: [User]
+      })
       .then(result => {
         order = result
       })
@@ -122,6 +123,11 @@ describe('GET /api/orders/list', () => {
     expect(orderList[0].orderNum).toEqual('12345678997')
     expect(orderList[0].Bicycle.num).toEqual('123')
     expect(response.body.meta.per_page).toEqual(20)
+    return Order.destroy({
+      where: {
+        id: order.id
+      }
+    })
   })
 })
 
@@ -139,18 +145,15 @@ describe('POST /api/orders/:id/return', () => {
       price: 150,
       state: 'ready'
     })
-    let order = await user.createOrder(
-      {
-        orderNum: '12345678997',
-        leaseTime: '2019-03-07 11:55:55',
-        price: bike.price,
-        state: 'renting',
-        bicycleId: bike.id
-      },
-      {
-        include: [Bicycle, User]
-      }
-    )
+    let order = await user.createOrder({
+      orderNum: '12345678997',
+      leaseTime: '2019-03-07 11:55:55',
+      price: bike.price,
+      state: 'renting',
+      bicycleId: bike.id
+    }, {
+      include: [Bicycle, User]
+    })
     const response = await request(server)
       .post(`/api/orders/${order.id}/return`)
       .set('Authorization', loginUser.body.data.token)
@@ -175,17 +178,14 @@ describe('GET /api/orders', () => {
       price: '150',
       state: 'ready'
     })
-    await user.createOrder(
-      {
-        orderNum: '12345678779',
-        leaseTime: '2019-03-07 11:55:55',
-        price: bike.price,
-        state: 'renting'
-      },
-      {
-        include: [User]
-      }
-    )
+    await user.createOrder({
+      orderNum: '12345678779',
+      leaseTime: '2019-03-07 11:55:55',
+      price: bike.price,
+      state: 'renting'
+    }, {
+      include: [User]
+    })
     await user.createOrder({
       orderNum: '12345666679',
       leaseTime: '2019-03-07 11:55:55',
