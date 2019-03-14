@@ -134,6 +134,7 @@ class ServicepointController {
           }
         }
       })
+      const point = await ServicePoints.findById(pointId)
       await Bicycle.update({
         servicePointId: pointId
       }, {
@@ -142,6 +143,10 @@ class ServicepointController {
             $in: ids
           }
         }
+      }).then(() => {
+        point.update({
+          bicycleCount: point.bicycleCount + ids.length
+        })
       }).catch(() => {
         ctx.response.status = 412
         ctx.body = renderResponse.ERROR_412('参数错误')

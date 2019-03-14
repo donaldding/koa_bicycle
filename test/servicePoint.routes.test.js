@@ -52,6 +52,7 @@ describe('GET /api/servicePoints', () => {
     expect(response.status).toEqual(200)
     expect(response.type).toEqual('application/json')
     expect(response.body.data.length).toEqual(1)
+    expect(response.body.data[0].bicycleCount).toEqual(0)
   })
   test('should return points(when many points)', async () => {
     const loginUser = await login()
@@ -211,5 +212,8 @@ describe('GET /api/servicePoints/:id/bicycles', () => {
     expect(response.type).toEqual('application/json')
     const resp_point = response.body.data
     expect(resp_point.Bicycles.length).toEqual(2)
+    return await ServicePoint.findById(point.id).then(result => {
+      expect(result.bicycleCount).toEqual(2)
+    })
   })
 })
