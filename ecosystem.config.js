@@ -20,7 +20,7 @@ module.exports = {
   deploy: {
     production: {
       user: 'root',
-      host: '173.248.240.193',
+      host: '',
       ref: 'origin/master',
       repo: 'git@github.com:donaldding/koa_bicycle.git',
       path: '/var/www/shared-bicycle/production',
